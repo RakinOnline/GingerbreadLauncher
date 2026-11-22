@@ -1,12 +1,12 @@
 # Gingerbread Launcher
 
-Android 2.3.6 Gingerbread-style home launcher (Java, no dependencies).
+Android 4-style home with Gingerbread green icons: power-control bar, dock, APPS/WIDGETS drawer,
+SlidingTab lock, Menu panel and the zombie Gingerbread easter egg (Menu > About > tap version > long-press).
 
-## Get the APK (no Android Studio needed)
-1. Create a free GitHub repo and upload everything in this folder (keep the `.github` folder).
-2. Open the repo's **Actions** tab -> "Build APK" -> open the latest run (or press **Run workflow**).
-3. Download the **GingerbreadLauncher-apk** artifact (zip), extract it, and copy `app-debug.apk` to your phone.
-4. On the phone: allow "Install unknown apps" for your file manager, install the APK.
-5. Press Home -> choose **Gingerbread Launcher** -> **Always**.
+## Build the APK without Android Studio
+1. Upload this whole folder to a GitHub repo (keep `.github` and `app/debug.keystore`).
+2. Actions tab -> Build APK -> Run workflow.
+3. Download the `GingerbreadLauncher-apk` artifact and install `app-debug.apk`.
 
-(Or open the folder in Android Studio and run Build > Build APK.)
+## Make it your launcher (Realme / Android 13)
+Settings -> Apps -> Default apps -> Home app -> Gingerbread Launcher.

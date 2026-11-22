@@ -6,15 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.os.BatteryManager;
 import android.view.View;
 import java.util.Date;
 
-/** Gingerbread-style status bar: dark gradient, green signal + battery, clock on the right. */
+/** Android 4-style status bar with Gingerbread green icons. */
 public class StatusBarView extends View {
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF r = new RectF();
@@ -52,9 +50,8 @@ public class StatusBarView extends View {
         float w = getWidth(), h = getHeight(), m = Ui.dp(ctx, 6);
 
         p.setStyle(Paint.Style.FILL);
-        p.setShader(new LinearGradient(0, 0, 0, h, 0xFF3C3C3C, 0xFF000000, Shader.TileMode.CLAMP));
+        p.setColor(Color.BLACK);
         c.drawRect(0, 0, w, h, p);
-        p.setShader(null);
 
         // clock
         String t = android.text.format.DateFormat.getTimeFormat(ctx).format(new Date());
@@ -63,34 +60,43 @@ public class StatusBarView extends View {
         float tw = p.measureText(t);
         float base = h / 2f - (p.ascent() + p.descent()) / 2f;
         c.drawText(t, w - m - tw, base, p);
-        float x = w - m - tw - m * 1.5f;
+        float x = w - m - tw - m * 1.6f;
 
-        // battery (green fill)
-        float bw = Ui.dp(ctx, 22), bh = h * 0.42f;
+        // battery (vertical, green)
+        float bw = Ui.dp(ctx, 9), bh = Ui.dp(ctx, 15);
         x -= bw;
-        r.set(x, h / 2f - bh / 2f, x + bw, h / 2f + bh / 2f);
+        float top = h / 2f - bh / 2f + Ui.dp(ctx, 1);
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(0xFFBBBBBB);
+        c.drawRect(x + bw * 0.3f, top - Ui.dp(ctx, 1.5f), x + bw * 0.7f, top, p);
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(Ui.dp(ctx, 1));
-        p.setColor(0xFFBBBBBB);
-        c.drawRoundRect(r, 2, 2, p);
+        r.set(x, top, x + bw, top + bh);
+        c.drawRect(r, p);
         p.setStyle(Paint.Style.FILL);
         p.setColor(battery <= 15 ? 0xFFFF4444 : Ui.GREEN);
-        float in = Ui.dp(ctx, 2);
-        c.drawRect(x + in, r.top + in, x + in + (bw - 2 * in) * battery / 100f, r.bottom - in, p);
-        p.setColor(0xFFBBBBBB);
-        c.drawRect(x + bw, h / 2f - bh * 0.2f, x + bw + Ui.dp(ctx, 2), h / 2f + bh * 0.2f, p);
-        x -= m * 1.5f;
+        float in = Ui.dp(ctx, 1.5f);
+        float fillH = (bh - 2 * in) * battery / 100f;
+        c.drawRect(x + in, top + bh - in - fillH, x + bw - in, top + bh - in, p);
+        x -= m * 1.6f;
 
-        // signal bars (decorative)
-        float barW = Ui.dp(ctx, 3), gap = Ui.dp(ctx, 1.5f);
+        // signal bars (decorative, green)
+        float barW = Ui.dp(ctx, 2.5f), gap = Ui.dp(ctx, 1.2f);
         float total = 5 * barW + 4 * gap;
         x -= total;
-        float bottom = h / 2f + h * 0.25f;
+        float bottom = h / 2f + h * 0.26f;
+        p.setColor(Ui.GREEN);
         for (int i = 0; i < 5; i++) {
-            float bhi = h * 0.2f + i * h * 0.1f;
+            float bhi = h * 0.18f + i * h * 0.1f;
             float left = x + i * (barW + gap);
-            p.setColor(i < 4 ? Ui.GREEN : 0xFF666666);
             c.drawRect(left, bottom - bhi, left + barW, bottom, p);
         }
+        x -= m * 1.8f;
+
+        // wifi (decorative, green)
+        float s = h * 0.27f;
+        p.setColor(Ui.GREEN);
+        p.setStrokeWidth(Ui.dp(ctx, 1.6f));
+        Glyphs.wifi(c, p, x - s, h / 2f, s);
     }
 }
